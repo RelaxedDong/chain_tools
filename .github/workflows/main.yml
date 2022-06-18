@@ -47,8 +47,8 @@ jobs:
         python -m pytest -v
     - name: upload pro
       run: |
-          docker login --username $CI_REGISTRY_UESRNAME --password ${{CI_REGISTRY_PASSWORD}} $CI_REGISTRY
-          sed -i "s#__imagename__#${{steps.vars.outputs.IMAGE_NAME}}#g" docker-compose.yml
+          docker login --username $CI_REGISTRY_UESRNAME --password ${{ secrets.CI_REGISTRY_PASSWORD }} $CI_REGISTRY
+          sed -i "s#__shortsha__#${{ steps.short-sha.outputs.sha }}#g" docker-compose.yml
           cat docker-compose.yml
           docker build -t ${{steps.vars.outputs.IMAGE_NAME}} .
           docker push ${{steps.vars.outputs.IMAGE_NAME}}

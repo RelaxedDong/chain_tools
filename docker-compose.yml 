@@ -2,7 +2,7 @@ version: '3.1'
 
 services:
     web:
-        image: registry.cn-hangzhou.aliyuncs.com/docker-dong/chain_tools:__imagename__
+        image: registry.cn-hangzhou.aliyuncs.com/docker-dong/chain_tools:__shortsha__
         command: sanic main:app --host=0.0.0.0 --port=8000
         deploy:
             replicas: 2
