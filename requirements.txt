@@ -1,4 +1,8 @@
+sanic
 aiohttp==3.8.1
 aioredis==2.0.1
 python-dotenv
 web3
+pytest
+sanic-testing
+pytest-asyncio
