@@ -10,8 +10,8 @@ on:
 #  pull_request:
 #    branches: [ master ]
 env:
-  CI_REGISTRY: "registry.cn-hangzhou.aliyuncs.com/docker-dong"
-  CI_REGISTRY_UESRNAME: "dh1417766861"
+  CI_REGISTRY: registry.cn-hangzhou.aliyuncs.com/docker-dong
+  CI_REGISTRY_UESRNAME: dh1417766861
 
 # 执行一个或者多个任务
 jobs:
