@@ -35,3 +35,17 @@ jobs:
     - name: Run Tests
       run: |
         python -m pytest -v
+
+    # 部署
+    - name: CD
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.CHAIN_TOOL_HOST }}
+        USERNAME: ${{ secrets.CHAIN_TOOL_USERNAME }}
+        KEY: ${{ secrets.CHAIN_TOOL_SSHKEY }}
+        script: | 
+          cd /workspace
+          git pull git@github.com:RelaxedDong/chain_tools.git
+          cd chain_tools
+          docker build --tag chain_tool_service .
+          docker run -d -p 8000:8000 chain_tool_service
