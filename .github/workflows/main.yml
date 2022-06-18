@@ -21,7 +21,7 @@ jobs:
 
     steps: # 字段指定每个 Job 的运行步骤
     - name: checkout to masater
-      uses: actions/checkout@v1
+      uses: actions/checkout@master
     - name: Set up Python ${{ matrix.python-version }} # 步骤名称
       uses: actions/setup-python@v3 # 这个表示使用别人预先设置好的Actions，用了actions/setup-python@v1来设置python环境，不用我自己设置了。
       with:
