@@ -54,7 +54,7 @@ jobs:
         USERNAME: ${{ secrets.CHAIN_TOOL_USERNAME }}
         PASSWORD: ${{ secrets.CHAIN_TOOL_PASSWORD }}
         script: |
-          docker login --username ${{CI_REGISTRY_UESRNAME}} --password ${{CI_REGISTRY_PASSWORD}} ${{CI_REGISTRY}}
+          docker login --username $CI_REGISTRY_UESRNAME --password ${{CI_REGISTRY_PASSWORD}} $CI_REGISTRY
           sed -i "s#__imagename__#${{steps.vars.outputs.IMAGE_NAME}}#g" docker-compose.yml
           cat docker-compose.yml
           docker build -t ${{steps.vars.outputs.IMAGE_NAME}} .
