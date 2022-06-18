@@ -45,22 +45,22 @@ jobs:
     - name: Run Tests
       run: |
         python -m pytest -v
-
-    # 部署
-    - name: CD
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.CHAIN_TOOL_HOST }}
-        USERNAME: ${{ secrets.CHAIN_TOOL_USERNAME }}
-        PASSWORD: ${{ secrets.CHAIN_TOOL_PASSWORD }}
-        script: |
+    - name: upload pro
+      run: |
           docker login --username $CI_REGISTRY_UESRNAME --password ${{CI_REGISTRY_PASSWORD}} $CI_REGISTRY
           sed -i "s#__imagename__#${{steps.vars.outputs.IMAGE_NAME}}#g" docker-compose.yml
           cat docker-compose.yml
           docker build -t ${{steps.vars.outputs.IMAGE_NAME}} .
           docker push ${{steps.vars.outputs.IMAGE_NAME}}
           docker rmi ${{steps.vars.outputs.IMAGE_NAME}}
-
+    # 部署
+#    - name: CD
+#      uses: appleboy/ssh-action@master
+#      with:
+#        host: ${{ secrets.CHAIN_TOOL_HOST }}
+#        USERNAME: ${{ secrets.CHAIN_TOOL_USERNAME }}
+#        PASSWORD: ${{ secrets.CHAIN_TOOL_PASSWORD }}
+#        script: |
 #          cd /root/workspace/chain_tools
 #          git pull origin master
 #          docker build --tag chain_tool_service:${{ steps.short-sha.outputs.sha }} .
