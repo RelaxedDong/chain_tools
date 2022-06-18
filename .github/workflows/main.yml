@@ -1,4 +1,5 @@
 # https://www.ruanyifeng.com/blog/2019/09/getting-started-with-github-actions.html
+# https://docs.github.com/cn/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstrategymax-parallel
 # 字段是 workflow 的名称。如果省略该字段，默认为当前 workflow 的文件名。
 name: MAIN CICD
 
@@ -14,15 +15,15 @@ jobs:
   build:
     runs-on: ubuntu-18.04 # runs-on字段指定运行所需要的虚拟机环境
     strategy:
-      max-parallel: 4
+#      max-parallel: 4 # 设置使用matrix作业策略时可以同时运行的最大作业数
       matrix:
         python-version: [3.9]
 
     steps: # 字段指定每个 Job 的运行步骤
     - name: checkout to masater
-      uses: actions/checkout@master
+      uses: actions/checkout@v1
     - name: Set up Python ${{ matrix.python-version }} # 步骤名称
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v3 # 这个表示使用别人预先设置好的Actions，用了actions/setup-python@v1来设置python环境，不用我自己设置了。
       with:
         python-version: ${{ matrix.python-version }}
     # 建立环境
