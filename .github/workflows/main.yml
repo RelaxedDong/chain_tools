@@ -1,6 +1,5 @@
 # https://www.ruanyifeng.com/blog/2019/09/getting-started-with-github-actions.html
 # https://docs.github.com/cn/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstrategymax-parallel
-# https://docs.gitlab.com/ee/ci/variables/
 # 字段是 workflow 的名称。如果省略该字段，默认为当前 workflow 的文件名。
 name: MAIN CICD
 
@@ -25,30 +24,42 @@ jobs:
       id: short-sha
       with:
         length: 6
-    - uses: actions/checkout@master
-    - name: Set up Python ${{ matrix.python-version }} # 步骤名称
-      uses: actions/setup-python@v3 # 这个表示使用别人预先设置好的Actions，用了actions/setup-python@v1来设置python环境，不用我自己设置了。
-      with:
-        python-version: ${{ matrix.python-version }}
-    # 建立环境
-    - name: Install Dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r ./requirements.txt
-    # 运行测试
-    - name: Run Tests
-      run: |
-        python -m pytest -v
+    - name: Get Image name
+      # $CI_REGISTRY/$CI_PROJECT_NAME:$CI_COMMIT_SHORT_SHA
+      run: echo "IMAGE_NAME=`echo ${{ github.repository }}:${{ steps.short-sha.outputs.sha }}`" >> $GITHUB_ENV
+    - name: My step
+      run: myscript ${{IMAGE_NAME}}
+#    - uses: actions/checkout@master
+#    - name: Set up Python ${{ matrix.python-version }} # 步骤名称
+#      uses: actions/setup-python@v3 # 这个表示使用别人预先设置好的Actions，用了actions/setup-python@v1来设置python环境，不用我自己设置了。
+#      with:
+#        python-version: ${{ matrix.python-version }}
+#    # 建立环境
+#    - name: Install Dependencies
+#      run: |
+#        python -m pip install --upgrade pip
+#        pip install -r ./requirements.txt
+#    # 运行测试
+#    - name: Run Tests
+#      run: |
+#        python -m pytest -v
+#
+#    # 部署
+#    - name: CD
+#      uses: appleboy/ssh-action@master
+#      with:
+#        host: ${{ secrets.CHAIN_TOOL_HOST }}
+#        USERNAME: ${{ secrets.CHAIN_TOOL_USERNAME }}
+#        PASSWORD: ${{ secrets.CHAIN_TOOL_PASSWORD }}
+#        script: |
+#          docker login --username ${{CI_REGISTRY_UESRNAME}} --password ${{CI_REGISTRY_PASSWORD}} ${{CI_REGISTRY}}
+#          sed -i "s#__imagename__#${{IMAGE_NAME}}#g" yml/deployment/app.yaml
+#          cat docker-compose.yml
+#          docker build -t ${{IMAGE_NAME}} .
+#          docker push ${{IMAGE_NAME}}
+#          docker rmi ${{IMAGE_NAME}}
 
-    # 部署
-    - name: CD
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.CHAIN_TOOL_HOST }}
-        USERNAME: ${{ secrets.CHAIN_TOOL_USERNAME }}
-        PASSWORD: ${{ secrets.CHAIN_TOOL_PASSWORD }}
-        script: | 
-          cd /root/workspace/chain_tools
-          git pull origin master
-          docker build --tag chain_tool_service:${{ steps.short-sha.outputs.sha }} .
-          docker run -d -p 8000:8000 chain_tool_service:${{ steps.short-sha.outputs.sha }}
+#          cd /root/workspace/chain_tools
+#          git pull origin master
+#          docker build --tag chain_tool_service:${{ steps.short-sha.outputs.sha }} .
+#          docker run -d -p 8000:8000 chain_tool_service:${{ steps.short-sha.outputs.sha }}

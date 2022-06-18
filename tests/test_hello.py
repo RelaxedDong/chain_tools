@@ -9,5 +9,6 @@ from main import app
 
 def test_basic_test_client():
     request, response = app.test_client.get("/")
-    assert response.json == {'hello': 'world', 'version': 1}
+    response_json = response.json
+    assert response_json['version'] == 1
     assert response.status == 200
