@@ -24,11 +24,12 @@ jobs:
       id: short-sha
       with:
         length: 6
-    - name: Get Image name
+    - name: Set Vars
+      id: vars
       # $CI_REGISTRY/$CI_PROJECT_NAME:$CI_COMMIT_SHORT_SHA
-      run: echo "IMAGE_NAME=`echo ${{ github.repository }}:${{ steps.short-sha.outputs.sha }}`" >> $GITHUB_ENV
+      run: echo "::set-output name=IMAGE_NAME::${{ github.repository }}:${{ steps.short-sha.outputs.sha }}"
     - name: My step
-      run: myscript ${{IMAGE_NAME}}
+      run: echo "${{steps.vars.outputs.IMAGE_NAME}}"
 #    - uses: actions/checkout@master
 #    - name: Set up Python ${{ matrix.python-version }} # 步骤名称
 #      uses: actions/setup-python@v3 # 这个表示使用别人预先设置好的Actions，用了actions/setup-python@v1来设置python环境，不用我自己设置了。
