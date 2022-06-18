@@ -1,26 +1,67 @@
-version: '3.1'
+# https://www.ruanyifeng.com/blog/2019/09/getting-started-with-github-actions.html
+# https://docs.github.com/cn/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstrategymax-parallel
+# 字段是 workflow 的名称。如果省略该字段，默认为当前 workflow 的文件名。
+name: MAIN CICD
 
-services:
-    web:
-        image: registry.cn-hangzhou.aliyuncs.com/docker-dong/chain_tools:__imagename__
-        command: sanic main:app --host=0.0.0.0 --port=8000
-        deploy:
-            replicas: 2
-        secrets:
-            - db_password
+# 触发条件
+on:
+  push:
+    branches: [ master ]
+#  pull_request:
+#    branches: [ master ]
+env:
+  CI_REGISTRY: registry.cn-hangzhou.aliyuncs.com/docker-dong
+  CI_REGISTRY_UESRNAME: dh1417766861
 
-    nginx:
-        image: nginx
-        ports:
-            - 8000:80
-        deploy:
-            mode: global
+# 执行一个或者多个任务
+jobs:
+  build:
+    runs-on: ubuntu-18.04 # runs-on字段指定运行所需要的虚拟机环境
+    strategy:
+#      max-parallel: 4 # 设置使用matrix作业策略时可以同时运行的最大作业数
+      matrix:
+        python-version: [3.9]
 
-    redis:
-        image: redis
-        deploy:
-            replicas: 1
-
-secrets:
-    db_password:
-        external: true
+    steps: # 字段指定每个 Job 的运行步骤
+    - uses: benjlevesque/short-sha@v1.2
+      id: short-sha
+      with:
+        length: 6
+    - name: Set Vars
+      id: vars
+      # $CI_REGISTRY/$CI_PROJECT_NAME:$CI_COMMIT_SHORT_SHA
+      run: echo "::set-output name=IMAGE_NAME::${{ github.repository }}:${{ steps.short-sha.outputs.sha }}"
+    - uses: actions/checkout@master
+    - name: Set up Python ${{ matrix.python-version }} # 步骤名称
+      uses: actions/setup-python@v3 # 这个表示使用别人预先设置好的Actions，用了actions/setup-python@v1来设置python环境，不用我自己设置了。
+      with:
+        python-version: ${{ matrix.python-version }}
+    # 建立环境
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r ./requirements.txt
+    # 运行测试
+    - name: Run Tests
+      run: |
+        python -m pytest -v
+    - name: upload pro
+      run: |
+          docker login --username $CI_REGISTRY_UESRNAME --password ${{ secrets.CI_REGISTRY_PASSWORD }} $CI_REGISTRY
+          sed -i "s#__shortsha__#${{ steps.short-sha.outputs.sha }}#g" docker-compose.yml
+          cat docker-compose.yml
+          docker build -t ${{steps.vars.outputs.IMAGE_NAME}} .
+          docker push ${{steps.vars.outputs.IMAGE_NAME}}
+          docker rmi ${{steps.vars.outputs.IMAGE_NAME}}
+    # 部署
+#    - name: CD
+#      uses: appleboy/ssh-action@master
+#      with:
+#        host: ${{ secrets.CHAIN_TOOL_HOST }}
+#        USERNAME: ${{ secrets.CHAIN_TOOL_USERNAME }}
+#        PASSWORD: ${{ secrets.CHAIN_TOOL_PASSWORD }}
+#        script: |
+#          cd /root/workspace/chain_tools
+#          git pull origin master
+#          docker build --tag chain_tool_service:${{ steps.short-sha.outputs.sha }} .
+#          docker run -d -p 8000:8000 chain_tool_service:${{ steps.short-sha.outputs.sha }}
