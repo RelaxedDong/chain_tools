@@ -1,5 +1,6 @@
 # https://www.ruanyifeng.com/blog/2019/09/getting-started-with-github-actions.html
 # https://docs.github.com/cn/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstrategymax-parallel
+# https://docs.gitlab.com/ee/ci/variables/
 # 字段是 workflow 的名称。如果省略该字段，默认为当前 workflow 的文件名。
 name: MAIN CICD
 
@@ -20,6 +21,9 @@ jobs:
         python-version: [3.9]
 
     steps: # 字段指定每个 Job 的运行步骤
+    - name: Set short Commit Sha
+      id: vars
+      run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
     - name: checkout to masater
       uses: actions/checkout@master
     - name: Set up Python ${{ matrix.python-version }} # 步骤名称
@@ -46,5 +50,5 @@ jobs:
         script: | 
           cd /root/workspace/chain_tools
           git pull origin master
-          docker build --tag chain_tool_service .
-          docker run -d -p 8000:8000 chain_tool_service
+          docker build --tag chain_tool_service:${{ steps.vars.outputs.sha_short }} .
+          docker run -d -p 8000:8000 chain_tool_service:${{ steps.vars.outputs.sha_short }}

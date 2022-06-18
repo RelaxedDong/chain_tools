@@ -7,4 +7,4 @@ RUN apt-get update &&  apt-get -y install gcc
 COPY requirements.txt requirements.txt
 RUN python -m pip install --upgrade pip && pip3 install -r requirements.txt
 COPY . .
-CMD [ "sanic", "server:app" , "--host=0.0.0.0", "--port=8000"]
+CMD [ "sanic", "main:app" , "--host=0.0.0.0", "--port=8000"]
