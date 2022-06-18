@@ -9,6 +9,9 @@ on:
     branches: [ master ]
 #  pull_request:
 #    branches: [ master ]
+env:
+  CI_REGISTRY: "registry.cn-hangzhou.aliyuncs.com/docker-dong"
+  CI_REGISTRY_UESRNAME: "dh1417766861"
 
 # 执行一个或者多个任务
 jobs:
@@ -28,37 +31,35 @@ jobs:
       id: vars
       # $CI_REGISTRY/$CI_PROJECT_NAME:$CI_COMMIT_SHORT_SHA
       run: echo "::set-output name=IMAGE_NAME::${{ github.repository }}:${{ steps.short-sha.outputs.sha }}"
-    - name: My step
-      run: echo "${{steps.vars.outputs.IMAGE_NAME}}"
-#    - uses: actions/checkout@master
-#    - name: Set up Python ${{ matrix.python-version }} # 步骤名称
-#      uses: actions/setup-python@v3 # 这个表示使用别人预先设置好的Actions，用了actions/setup-python@v1来设置python环境，不用我自己设置了。
-#      with:
-#        python-version: ${{ matrix.python-version }}
-#    # 建立环境
-#    - name: Install Dependencies
-#      run: |
-#        python -m pip install --upgrade pip
-#        pip install -r ./requirements.txt
-#    # 运行测试
-#    - name: Run Tests
-#      run: |
-#        python -m pytest -v
-#
-#    # 部署
-#    - name: CD
-#      uses: appleboy/ssh-action@master
-#      with:
-#        host: ${{ secrets.CHAIN_TOOL_HOST }}
-#        USERNAME: ${{ secrets.CHAIN_TOOL_USERNAME }}
-#        PASSWORD: ${{ secrets.CHAIN_TOOL_PASSWORD }}
-#        script: |
-#          docker login --username ${{CI_REGISTRY_UESRNAME}} --password ${{CI_REGISTRY_PASSWORD}} ${{CI_REGISTRY}}
-#          sed -i "s#__imagename__#${{IMAGE_NAME}}#g" yml/deployment/app.yaml
-#          cat docker-compose.yml
-#          docker build -t ${{IMAGE_NAME}} .
-#          docker push ${{IMAGE_NAME}}
-#          docker rmi ${{IMAGE_NAME}}
+    - uses: actions/checkout@master
+    - name: Set up Python ${{ matrix.python-version }} # 步骤名称
+      uses: actions/setup-python@v3 # 这个表示使用别人预先设置好的Actions，用了actions/setup-python@v1来设置python环境，不用我自己设置了。
+      with:
+        python-version: ${{ matrix.python-version }}
+    # 建立环境
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r ./requirements.txt
+    # 运行测试
+    - name: Run Tests
+      run: |
+        python -m pytest -v
+
+    # 部署
+    - name: CD
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.CHAIN_TOOL_HOST }}
+        USERNAME: ${{ secrets.CHAIN_TOOL_USERNAME }}
+        PASSWORD: ${{ secrets.CHAIN_TOOL_PASSWORD }}
+        script: |
+          docker login --username ${{CI_REGISTRY_UESRNAME}} --password ${{CI_REGISTRY_PASSWORD}} ${{CI_REGISTRY}}
+          sed -i "s#__imagename__#${{steps.vars.outputs.IMAGE_NAME}}#g" docker-compose.yml
+          cat docker-compose.yml
+          docker build -t ${{steps.vars.outputs.IMAGE_NAME}} .
+          docker push ${{steps.vars.outputs.IMAGE_NAME}}
+          docker rmi ${{steps.vars.outputs.IMAGE_NAME}}
 
 #          cd /root/workspace/chain_tools
 #          git pull origin master
