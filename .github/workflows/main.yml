@@ -44,8 +44,7 @@ jobs:
         USERNAME: ${{ secrets.CHAIN_TOOL_USERNAME }}
         PASSWORD: ${{ secrets.CHAIN_TOOL_PASSWORD }}
         script: | 
-          cd ~/workspace/chain_tools
+          cd /root/workspace/chain_tools
           git pull origin master
-          cd chain_tools
-          docker build --tag chain_tool_service:v1 .
-          docker run -d -p 8000:8000 chain_tool_service:v1
+          docker build --tag chain_tool_service .
+          docker run -d -p 8000:8000 chain_tool_service
