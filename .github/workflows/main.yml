@@ -42,7 +42,7 @@ jobs:
       with:
         host: ${{ secrets.CHAIN_TOOL_HOST }}
         USERNAME: ${{ secrets.CHAIN_TOOL_USERNAME }}
-        KEY: ${{ secrets.CHAIN_TOOL_SSHKEY }}
+        PASSWORD: ${{ secrets.CHAIN_TOOL_PASSWORD }}
         script: | 
           cd /workspace
           git pull git@github.com:RelaxedDong/chain_tools.git
