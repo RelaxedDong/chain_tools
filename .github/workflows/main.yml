@@ -21,11 +21,11 @@ jobs:
         python-version: [3.9]
 
     steps: # 字段指定每个 Job 的运行步骤
-    - name: Set short Commit Sha
-      id: vars
-      run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
-    - name: checkout to masater
-      uses: actions/checkout@master
+    - uses: benjlevesque/short-sha@v1.2
+      id: short-sha
+      with:
+        length: 6
+    - uses: actions/checkout@master
     - name: Set up Python ${{ matrix.python-version }} # 步骤名称
       uses: actions/setup-python@v3 # 这个表示使用别人预先设置好的Actions，用了actions/setup-python@v1来设置python环境，不用我自己设置了。
       with:
@@ -50,5 +50,5 @@ jobs:
         script: | 
           cd /root/workspace/chain_tools
           git pull origin master
-          docker build --tag chain_tool_service:${{ steps.vars.outputs.sha_short }} .
-          docker run -d -p 8000:8000 chain_tool_service:${{ steps.vars.outputs.sha_short }}
+          docker build --tag chain_tool_service:${{ steps.short-sha.outputs.sha }} .
+          docker run -d -p 8000:8000 chain_tool_service:${{ steps.short-sha.outputs.sha }}
