@@ -52,9 +52,9 @@ jobs:
           sed -i "s#__shortsha__#${{ steps.short-sha.outputs.sha }}#g" docker-compose.yml
           cat docker-compose.yml
           echo "$CI_PROJECT_NAME:${{ steps.short-sha.outputs.sha }}"
-          docker build -t $CI_PROJECT_NAME:${{ steps.short-sha.outputs.sha }} .
-          docker push $CI_PROJECT_NAME:${{ steps.short-sha.outputs.sha }}
-          docker rmi $CI_PROJECT_NAME:${{ steps.short-sha.outputs.sha }}
+          docker build -t $CI_REGISTRY/$CI_PROJECT_NAME:${{ steps.short-sha.outputs.sha }} .
+          docker push $CI_REGISTRY/$CI_PROJECT_NAME:${{ steps.short-sha.outputs.sha }}
+          docker rmi $CI_REGISTRY/$CI_PROJECT_NAME:${{ steps.short-sha.outputs.sha }}
     # 部署
 #    - name: CD
 #      uses: appleboy/ssh-action@master
