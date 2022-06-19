@@ -7,7 +7,7 @@ import socket
 from sanic import Sanic
 from sanic.response import json
 
-version = 1
+version = 2
 container_id = socket.gethostname()
 
 app = Sanic("test")

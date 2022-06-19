@@ -2,17 +2,19 @@ version: '3.1'
 
 services:
     web:
-        image: registry.cn-hangzhou.aliyuncs.com/docker-dong/chain_tools:__shortsha__
+        image: registry.cn-hangzhou.aliyuncs.com/docker-dong/chain_tools:ff0d3e
         command: sanic main:app --host=0.0.0.0 --port=8000
         deploy:
             replicas: 2
-        secrets:
-            - db_password
+#        secrets:
+#            - db_password
 
     nginx:
         image: nginx
+        volumes:
+            - /root/workspace/service/nginx/chain_tools.conf:/etc/nginx/conf.d/chain_tools.conf
         ports:
-            - 8000:80
+            - 80:80
         deploy:
             mode: global
 
@@ -21,6 +23,6 @@ services:
         deploy:
             replicas: 1
 
-secrets:
-    db_password:
-        external: true
+#secrets:
+#    db_password:
+#        external: true

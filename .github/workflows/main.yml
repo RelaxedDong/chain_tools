@@ -12,6 +12,7 @@ on:
 env:
   CI_REGISTRY: registry.cn-hangzhou.aliyuncs.com/docker-dong
   CI_REGISTRY_UESRNAME: dh1417766861
+  CI_PROJECT_NAME: chain_tools
 
 # 执行一个或者多个任务
 jobs:
@@ -48,12 +49,13 @@ jobs:
     - name: upload pro
       run: |
           docker login --username $CI_REGISTRY_UESRNAME --password ${{ secrets.CI_REGISTRY_PASSWORD }} $CI_REGISTRY
-          sed -i "s#__shortsha__#${{ steps.short-sha.outputs.sha }}#g" docker-compose.yml
+#          sed -i "s#__shortsha__#${{ steps.short-sha.outputs.sha }}#g" docker-compose.yml
           cat docker-compose.yml
-          docker build -t ${{steps.vars.outputs.IMAGE_NAME}} .
-          docker push ${{steps.vars.outputs.IMAGE_NAME}}
-          docker rmi ${{steps.vars.outputs.IMAGE_NAME}}
-    # 部署
+          echo "$CI_PROJECT_NAME:${{ steps.short-sha.outputs.sha }}"
+          docker build -t $CI_REGISTRY/$CI_PROJECT_NAME:${{ steps.short-sha.outputs.sha }} .
+          docker push $CI_REGISTRY/$CI_PROJECT_NAME:${{ steps.short-sha.outputs.sha }}
+          docker rmi $CI_REGISTRY/$CI_PROJECT_NAME:${{ steps.short-sha.outputs.sha }}
+# 部署
 #    - name: CD
 #      uses: appleboy/ssh-action@master
 #      with:
