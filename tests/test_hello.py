@@ -10,5 +10,5 @@ from main import app
 def test_basic_test_client():
     request, response = app.test_client.get("/")
     response_json = response.json
-    assert response_json['version'] == 1
+    assert response_json['version'] == 2
     assert response.status == 200
