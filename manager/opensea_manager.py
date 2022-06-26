@@ -2,11 +2,17 @@
 # -*- coding:utf-8 -*-
 # @Time    : 2022/6/16 7:02 PM
 # @Author  : donghao
+import os
+
 import aiohttp
+from dotenv import load_dotenv
+load_dotenv()
+
 
 from utils.function_tools import fail_safe
+OPENSEA_API_KEY = os.environ.get("OPENSEA_API_KEY")
 
-HEADERS = {"X-API-Key": "2f6f419a083c46de9d83ce3dbe7db601"}
+HEADERS = {"X-API-Key": OPENSEA_API_KEY}
 
 
 @fail_safe(error_return={})

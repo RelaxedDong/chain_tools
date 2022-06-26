@@ -11,7 +11,11 @@ from web3 import Web3
 from web3._utils.encoding import to_json
 import warnings
 
-from manager.opensea_manager import get_opensea_collection_info
+from dotenv import load_dotenv
+load_dotenv()
+
+MAIN_NET_PROJECT_ID = os.environ.get("MAIN_NET_PROJECT_ID")
+
 
 warnings.filterwarnings('ignore')
 
@@ -35,7 +39,7 @@ IERC1155_CONTRACT_ABI = get_contract_abi("IERC1155")
 class Handler(object):
 
     def __init__(self):
-        self.w3 = Web3(Web3.HTTPProvider('https://mainnet.infura.io/v3/a047db24bb89483a87a1c1e8a136fa25'))
+        self.w3 = Web3(Web3.HTTPProvider(f'https://mainnet.infura.io/v3/{MAIN_NET_PROJECT_ID}'))
         self.erc721_contract_instance = self.w3.eth.contract(address=None, abi=IERC721_CONTRACT_ABI)
         self.erc1155_contract_instance = self.w3.eth.contract(address=None, abi=IERC1155_CONTRACT_ABI)
 
@@ -86,12 +90,12 @@ class Handler(object):
                 args = event['args']
                 if args['from'] != NONE_ADDRESS:
                     continue
-                get_opensea_collection_info()
                 data_info = {
                     "from_addr": args['from'],
                     "to": args['to'],
                     "token_id": args['tokenId']
                 }
+                print(data_info)
             # transfer_single_events = self._transfer_single_event(transaction_logs)
             # for event in transfer_single_events:
             #     args = event['args']

@@ -2,12 +2,10 @@ version: '3.1'
 
 services:
     web:
-        image: registry.cn-hangzhou.aliyuncs.com/docker-dong/chain_tools:ff0d3e
+        image: registry.cn-hangzhou.aliyuncs.com/docker-dong/chain_tools:9e77c8
         command: sanic main:app --host=0.0.0.0 --port=8000
         deploy:
             replicas: 2
-#        secrets:
-#            - db_password
 
     nginx:
         image: nginx
