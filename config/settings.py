@@ -27,3 +27,4 @@ MONGO_POOL_SETTING = {
     },
     "pool_size": 5,
 }
+print("MONGO_POOL_SETTING", MONGO_POOL_SETTING)
