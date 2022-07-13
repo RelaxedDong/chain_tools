@@ -7,3 +7,4 @@ pytest
 sanic-testing
 pytest-asyncio
 pymongo
+motor
