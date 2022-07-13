@@ -18,6 +18,7 @@ env:
 jobs:
   build:
     runs-on: ubuntu-18.04 # runs-on字段指定运行所需要的虚拟机环境
+    environment: MONGODB
     strategy:
 #      max-parallel: 4 # 设置使用matrix作业策略时可以同时运行的最大作业数
       matrix:
