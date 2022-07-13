@@ -6,11 +6,10 @@ import aioredis
 
 from utils.function_tools import run_sync
 
-REDIS_HOST = 'auth.redis.anbbit.prod'
+REDIS_HOST = '127.0.0.1'
 REDIS_PORT = 6379
 REDIS_PASSWD = ''
 REDIS_DEFAULT_POOL_MAXSIZE = 5
-KAFKA_SERVERS = ['kafka.anbbit.prod:9092', ]
 
 
 DEFAULT_DB = 0
@@ -43,4 +42,4 @@ class RedisUtilManager(object):
         return cls._instance
 
 
-RedisUtil = RedisUtilManager.instance()
+RedisUtil = RedisUtilManager.instance().redis

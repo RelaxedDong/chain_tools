@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script src="https://cdn.staticfile.org/vue-resource/1.5.1/vue-resource.min.js"></script>
+    <style>
+        .mint_list_box {
+            margin: 10px;
+            max-height: 500px;
+            overflow: auto;
+            max-width: 60%;
+        }
+
+        .my_fav_list_li {
+            max-width: 100%;
+            list-style: none;
+            display: flex;
+            flex-direction: row;
+            border-bottom: 1px solid rgb(229, 229, 229);
+        }
+
+        .icon_image {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+        }
+
+        .icon_image:hover {
+            border-color: coral;
+            cursor: pointer;
+        }
+
+        .opensea-box {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+        }
+
+        .box-right {
+            display: flex;
+            flex-direction: column;
+            margin-left: 10px;
+            box-sizing: border-box;
+            color: #737373;
+            vertical-align: center;
+        }
+
+        .box-right div {
+            /*margin-bottom: 5px;*/
+        }
+
+        .name {
+            color: black;
+            font-weight: bolder;
+        }
+
+        .banner-image {
+            width: 80px;
+            height: 70px;
+            border-radius: 5px;
+            padding: 5px;
+            box-sizing: border-box;
+        }
+
+        .account {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .paymony {
+            color: #ff1a51;
+            font-weight: bold;
+        }
+
+        .use_gwei {
+            /*font-size: 8px;*/
+            color: #a07bff;
+            margin-left: 20px;
+        }
+
+        .mint_cnt {
+            /*margin-left: 20px;*/
+            box-sizing: border-box;
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 12px;
+            border-radius: 5px;
+            padding: 1px 2px;
+        }
+
+        .redirect_box {
+            /*margin: auto 0;*/
+            /*margin-left: 10px;*/
+            /*box-sizing: border-box;*/
+            /*margin: 0 auto;*/
+            /*display: flex;*/
+            /*flex-direction: revert;*/
+        }
+
+        .wallet {
+            color: #737373;
+            margin-left: 20px;
+            font-size: 10px;
+            align-self: center;
+        }
+        .wallet:hover{
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+<div id="app">
+    <div class="mint_list_box">
+        <div class="fav_list_box">
+            <ul id="my_fav_list">
+                <li class="my_fav_list_li" v-for="item in mint_list" v-if="mint_list">
+                    <div class="opensea-box">
+                        <div class="box-left">
+                            <img :src="item.project_info.opensea_image_url" alt="" class="banner-image">
+                        </div>
+                        <div class="box-right">
+                            <div class="name">{{item.project_info.name}}
+                                <div class="mint_cnt">x{{item.minted_cnt}}</div>
+                            </div>
+                            <div class="paymony">Free</div>
+                            <div class="account">
+                                <div class="redirect_box">
+                                        <a :href="item.project_info.twitter_url" target="_blank"
+                                           v-if="item.project_info.twitter_url">
+                                            <img src="https://www.kindpng.com/picc/m/114-1140229_transparent-twitter-icon-transparent-twitter-logo-png-png.png"
+                                                 alt="" class="icon_image">
+                                        </a>
+                                        <a :href="item.project_info.opensea_url" target="_blank"
+                                           v-if="item.project_info.opensea_url">
+                                            <img src="https://opensea.io/static/images/logos/opensea.svg" alt=""
+                                                 class="icon_image">
+                                        </a>
+                                        <a :href="'https://etherscan.io/address/'+ item.contract_address">
+                                            <img src="https://res.cloudinary.com/crunchbase-production/image/upload/c_lpad,h_170,w_170,f_auto,b_white,q_auto:eco,dpr_1/v1493270825/clcylji7jjegwu18cnmy.png"
+                                                 alt="" class="icon_image">
+                                        </a>
+                                    </div>
+                                <div class="use_gwei">
+                                    20 Gwei ($30)
+                                </div>
+                                <div class="wallet">{{item.user_address}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--                      </div>-->
+                    <!--                  </div>-->
+                    <!--                        <a  class="my_fav_list_a" href="" target="_blank">-->
+                    <!--                            {{mint_info}}-->
+                    <!--                        </a>-->
+                    <!--                        <label class="my_fav_list_label">-->
+                    <!--                            <span>2019-04-08</span>-->
+                    <!--                        </label>-->
+                </li>
+            </ul>
+        </div>
+    </div>
+
+</div>
+</body>
+<script>
+    new Vue({
+        el: "#app",
+        data: function () {
+            return {
+                mint_list: []
+            };
+        },
+        mounted() {
+            let that = this;
+            this.$http.get('http://127.0.0.1:8000/monitor/new_east_mints').then(function (res) {
+                that.mint_list = res.data.records;
+            }, function () {
+                console.log('请求失败处理');
+            });
+        }
+    });
+</script>
+</html>
