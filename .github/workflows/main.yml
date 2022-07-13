@@ -20,12 +20,12 @@ jobs:
     runs-on: ubuntu-18.04 # runs-on字段指定运行所需要的虚拟机环境
     environment: MONGODB
     env:
-      OPENSEA_API_KEY: ${{secretse.OPENSEA_API_KEY}}
-      MAIN_NET_PROJECT_ID: ${{secretse.MAIN_NET_PROJECT_ID}}
-      MONGODB_PASSWORD: ${{secretse.MONGODB_PASSWORD}}
-      MONGODB_MONGO_USER: ${{secretse.MONGODB_MONGO_USER}}
-      MONGODB_DB_NAME: ${{secretse.MONGODB_DB_NAME}}
-      MONGODB_DB_HOST: ${{secretse.MONGODB_DB_HOST}}
+      OPENSEA_API_KEY: ${{secrets.OPENSEA_API_KEY}}
+      MAIN_NET_PROJECT_ID: ${{secrets.MAIN_NET_PROJECT_ID}}
+      MONGODB_PASSWORD: ${{secrets.MONGODB_PASSWORD}}
+      MONGODB_MONGO_USER: ${{secrets.MONGODB_MONGO_USER}}
+      MONGODB_DB_NAME: ${{secrets.MONGODB_DB_NAME}}
+      MONGODB_DB_HOST: ${{secrets.MONGODB_DB_HOST}}
     strategy:
 #      max-parallel: 4 # 设置使用matrix作业策略时可以同时运行的最大作业数
       matrix:
