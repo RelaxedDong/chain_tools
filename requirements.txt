@@ -6,3 +6,4 @@ web3==5.27.0
 pytest
 sanic-testing
 pytest-asyncio
+pymongo
